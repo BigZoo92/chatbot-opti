@@ -3,9 +3,9 @@ import prisma from '@/lib/prisma';
 
 import axios from 'axios';
 
-export async function GET(request: NextRequest) {
-  const url = new URL(request.url)
-  const id = url.searchParams.get("id")
+//@ts-ignore
+export async function GET(request: NextRequest, {params}) {
+    const id = params.id;
 
   try {
     const conversation = await prisma.conversation.findUnique({
@@ -23,10 +23,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ text: 'Error fetching conversation' }, { status: 500 });
   }
 }
-
-export async function POST(request: NextRequest) {
-    const url = new URL(request.url)
-    const id = url.searchParams.get("id")
+//@ts-ignore
+export async function POST(request: NextRequest, {params}) {
+    const id = params.id;
     const { prompt } = await request.json();
 
     console.info(prompt)
