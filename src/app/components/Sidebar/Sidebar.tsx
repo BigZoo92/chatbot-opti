@@ -27,7 +27,13 @@ const Sidebar = () => {
   }, []);
 
   return (
-    <nav style={{ width: 'clamp(150px, 40%, 300px)' }}>
+    <nav style={{ width: 'clamp(150px, 40%, 300px)', maxHeight: '100dvh', overflowY: 'auto' }}>  
+      <Link href="/" passHref>
+        <ListItemButton>
+          <ListItemText primary="New Conversation" />
+        </ListItemButton>
+      </Link>
+      <Divider />
       <List>
         {loading ? (
           Array.from(new Array(5)).map((_, index) => (
@@ -45,12 +51,7 @@ const Sidebar = () => {
           ))
         )}
       </List>
-      <Divider />
-      <Link href="/" passHref>
-        <ListItemButton>
-          <ListItemText primary="New Conversation" />
-        </ListItemButton>
-      </Link>
+      
     </nav>
   );
 };

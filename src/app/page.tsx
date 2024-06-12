@@ -72,68 +72,14 @@ const ConversationPage = () => {
   return (
     <Container sx={{ display: 'flex', flexDirection: 'column', pb: 8, height: 'calc(100dvh - 60px)', overflowY: 'auto', overflowX: 'hidden', width: 'calc(100dvw - clamp(150px, 40%, 300px))' }}>
       {error && <Typography color="error">{error}</Typography>}
-      {loading ? (
-        <Box sx={{ mt: 3 }}>
-          {Array.from(new Array(3)).map((_, index) => (
-            <Skeleton key={index} variant="rectangular" width="100%" height={80} sx={{ mb: 2 }} />
-          ))}
-        </Box>
-      ) : (
-        conversation && (
-          <Box sx={{ mt: 3, flexGrow: 1, overflow: 'auto' }}>
-            {/* @ts-ignore */}
-            {conversation?.messages.map((msg: any) => (
-              <Paper
-                key={msg.id}
-                /* @ts-ignore */
-                sx={{
-                  mb: 2,
-                  p: 2,
-                  maxWidth: msg.role === 'user' ? '60%' : '100%',
-                  minWidth: '300px',
-                  marginLeft: msg.role === 'user' ? '40%' : '0',
-                  backgroundColor: msg.role === 'user' && '#414141',
-                  color: msg.role === 'user' && theme.palette.getContrastText('#414141'),
-                }}
-              >
-                <Typography variant="subtitle2" color="textSecondary">
-                  {msg.role}:
-                </Typography>
-                <ReactMarkdown
-                  components={{
-                    code({
-                      node,
-                      inline,
-                      className,
-                      children,
-                      ...props
-                    }: any) {
-                      const match = /language-(\w+)/.exec(className || '');
-                      return !inline && match ? (
-                        <SyntaxHighlighter
-                          style={atomDark}
-                          language={match[1]}
-                          PreTag="div"
-                          {...props}
-                        >
-                          {String(children).replace(/\n$/, '')}
-                        </SyntaxHighlighter>
-                      ) : (
-                        <code className={className} {...props}>
-                          {children}
-                        </code>
-                      );
-                    },
-                  }}
-                >
-                  {msg.content}
-                </ReactMarkdown>
-              </Paper>
-            ))}
-            <div ref={bottomRef} />
-          </Box>
-        )
-      )}
+      <Box>
+        <Typography variant='h1' sx={{
+          fontSize: 'clamp(16px, 3rem, 40px)',
+          fontWeight: '900',
+          textAlign: 'center',
+          textTransform: 'uppercase',
+        }}>WebWizard - Your Ultimate HTML, CSS, and JavaScript Companion</Typography>
+      </Box>
       <Box
         component="form"
         onSubmit={handleSubmit}
