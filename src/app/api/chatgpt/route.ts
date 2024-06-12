@@ -1,36 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
+
 import axios from 'axios';
 import prisma from '@/lib/prisma';
 
-export async function GET() {
-  try {
-    const conversations = await prisma.conversation.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
-    return NextResponse.json(conversations);
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error('Axios error fetching conversations:', error.response?.data || error.message);
-    } else {
-      console.error('Unexpected error fetching conversations:', error);
-    }
-    return NextResponse.json({ text: 'Error fetching conversations' }, { status: 500 });
-  }
-}
-
-
 export async function POST(request: NextRequest) {
   const { prompt } = await request.json();
-  console.log('API Key:', process.env.OPENAI_API_KEY);
-  
+  console.info(prompt)
+
   if (!process.env.OPENAI_API_KEY) {
     return NextResponse.json({ text: 'Missing API key' }, { status: 500 });
   }
 
   if (!prompt) {
     return NextResponse.json({ text: 'Prompt is required' }, { status: 400 });
+  }
+
+  if (!/html|css|javascript/i.test(prompt)) {
+    return NextResponse.json({ text: 'Le chatbot ne peut répondre qu’à des questions concernant le HTML, CSS, ou JavaScript.' }, { status: 400 });
   }
 
   const messages = [
@@ -56,20 +42,23 @@ export async function POST(request: NextRequest) {
 
     const generatedText = response.data.choices[0].message.content;
 
-    await prisma.conversation.create({
+    const conversation = await prisma.conversation.create({
       data: {
-        prompt,
-        response: generatedText,
+        title: prompt.slice(0, 30),
+        messages: {
+          create: [
+            { content: prompt, role: 'user' },
+            { content: generatedText, role: 'assistant' },
+          ],
+        },
       },
+      include: { messages: true },
     });
 
-    return NextResponse.json({ text: generatedText });
+    return NextResponse.json({ text: generatedText, conversationId: conversation.id });
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error('Axios error generating text:', error.response?.data || error.message);
-    } else {
-      console.error('Unexpected error generating text:', error);
-    }
+    // @ts-expect-error TS(2571): Object is of type 'unknown'.
+    console.error('Error generating text:', error.response?.data || error.message);
     return NextResponse.json({ text: 'Error generating text' }, { status: 500 });
   }
 }

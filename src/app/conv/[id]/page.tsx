@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import axios from 'axios';
-import { Container, Box, Typography, Paper, Button, TextField, CircularProgress, Skeleton } from '@mui/material';
+import { Container, Box, TextField, Button, Typography, Paper, Skeleton, CircularProgress } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -50,7 +50,7 @@ const ConversationPage = () => {
 
     try {
       setSubmitting(true);
-      const res = await axios.post(`/api/chatgpt`, { prompt });
+      const res = await axios.post(`/api/conversations/${id}?id=${id}`, { prompt });
       setPrompt('');
       const newConversationId = res.data.conversationId;
       fetchConversation();
@@ -92,8 +92,8 @@ const ConversationPage = () => {
                   maxWidth: msg.role === 'user' ? '60%' : '100%',
                   minWidth: '300px',
                   marginLeft: msg.role === 'user' ? '40%' : '0',
-                  backgroundColor: msg.role === 'user' && '#414141',
-                  color: msg.role === 'user' && theme.palette.getContrastText('#414141'),
+                  backgroundColor: msg.role === 'user' && '#3a3a3a',
+                  color: msg.role === 'user' && theme.palette.getContrastText('#3a3a3a'),
                 }}
               >
                 <Typography variant="subtitle2" color="textSecondary">
@@ -145,7 +145,7 @@ const ConversationPage = () => {
           width: 'calc(100% - clamp(150px, 40%, 300px))',
           display: 'flex',
           alignItems: 'center',
-          p: 1
+          p: 1,
         }}
       >
         <TextField
